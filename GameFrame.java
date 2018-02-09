@@ -1,8 +1,13 @@
 import java.awt.Graphics;
+import java.awt.Container;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.*;
@@ -11,19 +16,20 @@ import java.awt.event.*;
 public class GameFrame extends JFrame implements ActionListener {
 
   private JLabel diceLabel, boardLabel, turnLabel;
-  private JButton diceButton;
+  private JButton diceButton, humanButton;
   private int move = 0, turn = 0;
 
   public GameFrame() {
     super("Mario Party");
     setSize(800, 700);
-    getContentPane().setBackground(new java.awt.Color(255,255,255));
 
     diceLabel = new JLabel("Dice Roll:  ");
     diceLabel.setFont(new Font("Serif", Font.BOLD, 18));
     turnLabel = new JLabel("Turn:  ");
     turnLabel.setFont(new Font("Serif", Font.BOLD, 18));
     diceButton = new JButton("Roll Dice");
+    humanButton = new HumanPlayer();
+    humanButton.setLocation(400, 400);
 
     diceButton.addActionListener(this);
 
@@ -38,9 +44,11 @@ public class GameFrame extends JFrame implements ActionListener {
       boardLabel = new JLabel(new ImageIcon(boardPicture));
       centerPanel.add(boardLabel);
     }
-    catch (IOException ex) {
-      System.out.println("Invalid Picture");
+    catch (IOException e) {
+      e.printStackTrace();
     }
+
+    centerPanel.add(humanButton);
 
     JPanel bottomPanel = new JPanel();
 		bottomPanel.add(diceButton);
