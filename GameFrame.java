@@ -1,27 +1,16 @@
-import java.awt.Graphics;
-import java.awt.Container;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
 public class GameFrame extends JFrame implements ActionListener {
 
-  private JLabel diceLabel, boardLabel, turnLabel, dicePLabel;
-  private JButton diceButton, humanButton;
+  private JLabel diceLabel, boardLabel, turnLabel, dicePLabel, playerLabel;
+  private JButton diceButton;
   private int move = 0, turn = 0;
 
   public GameFrame() {
     super("Mario Party");
-    setSize(1000, 600);
+    setSize(1000, 800);
 
     diceLabel = new JLabel("Dice Roll:  ");
     diceLabel.setFont(new Font("Serif", Font.BOLD, 18));
@@ -30,8 +19,10 @@ public class GameFrame extends JFrame implements ActionListener {
     dicePLabel.setSize(1, 1);
     turnLabel = new JLabel("Turn:  ");
     turnLabel.setFont(new Font("Serif", Font.BOLD, 18));
+    boardLabel = new JLabel();
+    boardLabel.setIcon(new ImageIcon(getClass().getResource("board.png")));
     diceButton = new JButton("Roll Dice");
-    humanButton = new HumanPlayer();
+    playerLabel = new HumanPlayer();
 
     diceButton.addActionListener(this);
 
@@ -39,16 +30,11 @@ public class GameFrame extends JFrame implements ActionListener {
     topPanel.add(diceLabel);
     topPanel.add(turnLabel);
 
-    JPanel centerPanel = new JPanel();
+    JPanel westPanel = new JPanel();
+    westPanel.add(playerLabel);
 
-    try {
-      BufferedImage boardPicture = ImageIO.read(this.getClass().getResource("board.png"));
-      boardLabel = new JLabel(new ImageIcon(boardPicture));
-      centerPanel.add(boardLabel);
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
+    JPanel centerPanel = new JPanel();
+    centerPanel.add(boardLabel);
 
     JPanel eastPanel = new JPanel();
     eastPanel.add(dicePLabel);
@@ -58,7 +44,8 @@ public class GameFrame extends JFrame implements ActionListener {
 
     Container contentPane = getContentPane();
 		contentPane.add(topPanel, BorderLayout.NORTH);
-		contentPane.add(centerPanel, BorderLayout.WEST);
+    contentPane.add(westPanel, BorderLayout.WEST);
+		contentPane.add(centerPanel, BorderLayout.CENTER);
     contentPane.add(eastPanel, BorderLayout.EAST);
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -66,16 +53,22 @@ public class GameFrame extends JFrame implements ActionListener {
   }
 
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == diceButton) {
+    if (e.getSource() == diceButton && turn < 20) {
       move = (int)(Math.random()*6 ) + 1;
       diceLabel.setText("Dice Roll: " + move);
       turn++;
       turnLabel.setText("Turn: " + turn);
       dicePLabel.setIcon(new ImageIcon(getClass().getResource("dice" + move + ".png")));
+
+      if(turn == 4 || turn == 8 || turn == 12 || turn == 16 || turn == 20) {
+        boardLabel.setIcon(new ImageIcon(getClass().getResource("minigame1.png")));
+      }
+      else boardLabel.setIcon(new ImageIcon(getClass().getResource("board.png")));
+    }
+    else if(turn == 20) {
+      boardLabel.setIcon(new ImageIcon(getClass().getResource("end.png")));
     }
   }
-
-// after every 4 turns, get a minigame prompt to show up
 
   public static void main(String[] args) {
     new GameFrame().setVisible(true);
