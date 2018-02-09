@@ -1,20 +1,25 @@
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
 public class GameFrame extends JFrame implements ActionListener {
 
-  private JLabel diceLabel;
+  private JLabel diceLabel, boardLabel;
   private JButton diceButton;
   private int move = 0;
 
   public GameFrame() {
     super("Mario Party");
-    setSize(900, 800);
+    setSize(800, 700);
 
     diceLabel = new JLabel("" + move);
     diceButton = new JButton("Roll Dice");
-    javax.swing.JTextField[] array = new javax.swing.JTextField[40];
 
     diceButton.addActionListener(this);
 
@@ -22,6 +27,15 @@ public class GameFrame extends JFrame implements ActionListener {
     topPanel.add(diceLabel);
 
     JPanel centerPanel = new JPanel();
+
+    try {
+      BufferedImage boardPicture = ImageIO.read(this.getClass().getResource("board.png"));
+      boardLabel = new JLabel(new ImageIcon(boardPicture));
+      centerPanel.add(boardLabel);
+    }
+    catch (IOException ex) {
+      System.out.println("Invalid Picture");
+    }
 
     JPanel bottomPanel = new JPanel();
 		bottomPanel.add(diceButton);
